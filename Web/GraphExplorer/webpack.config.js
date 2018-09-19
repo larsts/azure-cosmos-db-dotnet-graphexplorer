@@ -2,9 +2,11 @@ var isDevBuild = process.argv.indexOf('--env.prod') < 0;
 var path = require('path');
 var webpack = require('webpack');
 var AureliaWebpackPlugin = require('aurelia-webpack-plugin');
+const isProduction = process.env.NODE_ENV === 'production';
 
 var bundleOutputDir = './wwwroot/dist';
 module.exports = {
+    mode: isProduction ? 'production' : 'development',
     resolve: { extensions: [ '.js', '.ts' ] },
     entry: { 'app': 'aurelia-bootstrapper-webpack' }, // Note: The aurelia-webpack-plugin will add your app's modules to this bundle automatically
     output: {
@@ -13,12 +15,11 @@ module.exports = {
 		filename: '[name].js'
     },
     module: {
-        loaders: [
-            { test: /\.ts$/, loader: 'ts-loader' },
-            { test: /\.html$/, loader: 'html-loader' },
-            { test: /\.css$/, loaders: [ 'style-loader', 'css-loader' ] },
-            { test: /\.(png|woff|woff2|eot|ttf|svg)$/, loader: 'url-loader?limit=100000' },
-            { test: /\.json$/, loader: 'json-loader' }
+        rules: [
+            { test: /\.ts$/, use: 'ts-loader' },
+            { test: /\.html$/, use: 'html-loader' },
+            { test: /\.css$/, use: [ 'style-loader', 'css-loader' ] },
+            { test: /\.(png|woff|woff2|eot|ttf|svg)$/, use: 'url-loader?limit=100000' }
         ]
     },
     plugins: [
